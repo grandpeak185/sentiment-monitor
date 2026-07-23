@@ -81,21 +81,20 @@ export default function ScoreGauge({ score, rating, analysis }: ScoreGaugeProps)
             className="animate-gauge-fill"
           />
         </svg>
-        {/* 中心文字 */}
-        <div className="absolute inset-x-0 bottom-0 flex flex-col items-center">
+        {/* 中心数字 */}
+        <div className="absolute inset-x-0 bottom-2 flex flex-col items-center">
           <span
             className="font-display text-6xl font-bold leading-none"
-            style={{ 
+            style={{
               color: scoreColor,
               textShadow: `0 0 10px ${scoreColor}, 0 0 20px ${scoreColor}, 0 0 40px ${scoreColor}40`
             }}
           >
             {score}
           </span>
-          <span className="mt-1 text-xs text-neutral">综合评分</span>
-          <span 
+          <span
             className="mt-1 font-display text-lg font-bold"
-            style={{ 
+            style={{
               color: scoreColor,
               textShadow: `0 0 8px ${scoreColor}, 0 0 15px ${scoreColor}`
             }}

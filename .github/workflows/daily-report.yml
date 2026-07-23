@@ -4,6 +4,9 @@ on:
   # 每日 UTC 04:00 触发（北京时间 12:00）
   schedule:
     - cron: '0 4 * * *'
+  # 代码 push 时触发
+  push:
+    branches: [main]
   # 允许手动触发
   workflow_dispatch:
 

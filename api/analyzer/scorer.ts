@@ -3,10 +3,12 @@ import type { AnalyzedArticle, Rating } from '../types.js';
 export interface ScoreResult {
   positiveScore: number;
   negativeScore: number;
+  neutralScore: number;
   overallScore: number;
   rating: Rating;
   positiveAnalysis: string;
   negativeAnalysis: string;
+  neutralAnalysis: string;
   overallAnalysis: string;
 }
 
@@ -15,10 +17,12 @@ export function calculateScores(articles: AnalyzedArticle[]): ScoreResult {
     return {
       positiveScore: 50,
       negativeScore: 50,
+      neutralScore: 50,
       overallScore: 50,
       rating: 'fair',
       positiveAnalysis: '今日未搜集到正面信息。',
       negativeAnalysis: '今日未搜集到负面信息。',
+      neutralAnalysis: '今日未搜集到中性信息。',
       overallAnalysis: '今日暂无足够数据进行分析评价，请等待下次更新。',
     };
   }
@@ -41,6 +45,10 @@ export function calculateScores(articles: AnalyzedArticle[]): ScoreResult {
     ? negativeArticles.reduce((sum, a) => sum + (1 - a.sentimentScore), 0) / negativeArticles.length
     : 0;
   const negativeScore = Math.round(negativeRatio * 60 + avgNegativeScore * 40);
+
+  // 中性得分：中性文章占比
+  const neutralRatio = neutralArticles.length / total;
+  const neutralScore = Math.round(neutralRatio * 100);
 
   // 综合得分：正面得分 - 负面得分*0.8，映射到 0-100
   const rawScore = positiveScore * 0.6 + (100 - negativeScore) * 0.4;
@@ -65,6 +73,12 @@ export function calculateScores(articles: AnalyzedArticle[]): ScoreResult {
     .slice(0, 5);
   const negativeAnalysis = generateNegativeAnalysis(negativeArticles, negativeScore, negativePoints);
 
+  // 黄方分析（中性）
+  const neutralPoints = neutralArticles
+    .map(a => a.keyPoints[0] || a.title)
+    .slice(0, 5);
+  const neutralAnalysis = generateNeutralAnalysis(neutralArticles, neutralScore, neutralPoints);
+
   // 综合评语
   const overallAnalysis = generateOverallAnalysis(
     overallScore, rating, total, positiveArticles.length, negativeArticles.length, neutralArticles.length
@@ -73,10 +87,12 @@ export function calculateScores(articles: AnalyzedArticle[]): ScoreResult {
   return {
     positiveScore,
     negativeScore,
+    neutralScore,
     overallScore,
     rating,
     positiveAnalysis,
     negativeAnalysis,
+    neutralAnalysis,
     overallAnalysis,
   };
 }
@@ -128,6 +144,32 @@ function generateNegativeAnalysis(
     analysis += '\n存在一定负面舆情，建议持续关注事态发展。';
   } else {
     analysis += '\n负面舆情处于可控范围，对整体影响有限。';
+  }
+
+  return analysis;
+}
+
+function generateNeutralAnalysis(
+  articles: AnalyzedArticle[],
+  score: number,
+  points: string[]
+): string {
+  if (articles.length === 0) {
+    return '今日未监测到中性舆情信息。';
+  }
+
+  let analysis = `今日共监测到 ${articles.length} 条中性信息，中性得分 ${score} 分。`;
+  analysis += `主要中性信息集中在以下方面：\n`;
+  points.forEach((p, i) => {
+    analysis += `${i + 1}. ${p}\n`;
+  });
+
+  if (score >= 70) {
+    analysis += '\n中性信息占比较高，公众讨论以客观陈述为主，缺乏明显情感倾向。';
+  } else if (score >= 50) {
+    analysis += '\n中性信息占比适中，部分报道以事实陈述为主。';
+  } else {
+    analysis += '\n中性信息较少，舆情以正面或负面为主。';
   }
 
   return analysis;

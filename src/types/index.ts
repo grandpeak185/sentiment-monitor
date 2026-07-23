@@ -25,10 +25,12 @@ export interface Report {
   keyPoints: string[];
   positiveScore: number;
   negativeScore: number;
+  neutralScore: number;
   overallScore: number;
   rating: Rating;
   positiveAnalysis: string;
   negativeAnalysis: string;
+  neutralAnalysis: string;
   overallAnalysis: string;
   articles: Article[];
 }

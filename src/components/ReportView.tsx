@@ -25,6 +25,8 @@ export default function ReportView({ report }: ReportViewProps) {
       <AnalysisPanel
         positiveScore={report.positiveScore}
         positiveAnalysis={report.positiveAnalysis}
+        neutralScore={report.neutralScore}
+        neutralAnalysis={report.neutralAnalysis}
         negativeScore={report.negativeScore}
         negativeAnalysis={report.negativeAnalysis}
       />

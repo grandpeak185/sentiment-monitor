@@ -82,7 +82,7 @@ export default function ScoreGauge({ score, rating, analysis }: ScoreGaugeProps)
           />
         </svg>
         {/* 中心数字 */}
-        <div className="absolute inset-x-0 bottom-2 flex flex-col items-center">
+        <div className="absolute inset-x-0 top-6 flex flex-col items-center">
           <span
             className="font-display text-6xl font-bold leading-none"
             style={{
@@ -93,7 +93,7 @@ export default function ScoreGauge({ score, rating, analysis }: ScoreGaugeProps)
             {score}
           </span>
           <span
-            className="mt-1 font-display text-lg font-bold"
+            className="mt-2 font-display text-lg font-bold"
             style={{
               color: scoreColor,
               textShadow: `0 0 8px ${scoreColor}, 0 0 15px ${scoreColor}`
@@ -104,7 +104,7 @@ export default function ScoreGauge({ score, rating, analysis }: ScoreGaugeProps)
         </div>
       </div>
       {/* 综合分析 */}
-      <p className="mt-4 max-w-2xl text-center text-sm leading-relaxed text-neutral-light">
+      <p className="mt-6 max-w-2xl text-center text-sm leading-relaxed text-neutral-light">
         {analysis}
       </p>
     </div>

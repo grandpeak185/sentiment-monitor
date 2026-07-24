@@ -1,17 +1,14 @@
 name: Daily Report Generator
 
 on:
-  # 每日 UTC 04:00 触发（北京时间 12:00）
   schedule:
     - cron: '0 4 * * *'
-  # 代码 push 时触发
   push:
     branches: [main]
-  # 允许手动触发
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
@@ -25,8 +22,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: main
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -41,18 +36,6 @@ jobs:
         run: npm run generate
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'
-
-      - name: Commit updated reports
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          git add public/data/reports/
-          git diff --quiet || git commit -m "chore: update daily report $(date -u +%Y-%m-%d)"
-
-      - name: Push updates
-        uses: ad-m/github-push-action@master
-        with:
-          branch: main
 
       - name: Build
         run: npm run build
